@@ -1,0 +1,82 @@
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { ThemeProvider } from 'styled-components';
+import theme from './styles/theme';
+import ReactMarkdown from 'react-markdown';
+
+// Импорт компонентов
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+
+// Импорт страниц
+import HomePage from './pages/HomePage';
+import AnalyzePage from './pages/AnalyzePage';
+import ResultsPage from './pages/ResultsPage';
+import DocumentationPage from './pages/DocumentationPage';
+import VisualizationPage from './pages/VisualizationPage';
+
+// Компонент для страницы условий использования
+const TermsPage = () => (
+  <div style={{ padding: '50px', textAlign: 'center' }}>
+    <h1>Условия использования</h1>
+    <p>Здесь будут размещены условия использования сервиса.</p>
+  </div>
+);
+
+// Компонент для страницы политики конфиденциальности
+const PrivacyPage = () => (
+  <div style={{ padding: '50px', textAlign: 'center' }}>
+    <h1>Политика конфиденциальности</h1>
+    <p>Здесь будет размещена политика конфиденциальности сервиса.</p>
+  </div>
+);
+
+// Компонент для страницы 404
+const NotFoundPage = () => (
+  <div style={{ padding: '50px', textAlign: 'center' }}>
+    <h1>404 - Страница не найдена</h1>
+    <p>Запрашиваемая страница не существует.</p>
+  </div>
+);
+
+function ReadmePage() {
+  const [content, setContent] = useState('');
+
+  useEffect(() => {
+    fetch('/README.md')
+      .then(res => res.text())
+      .then(text => setContent(text));
+  }, []);
+
+  return (
+    <div className="readme-container">
+      <ReactMarkdown>{content}</ReactMarkdown>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <ThemeProvider theme={theme}>
+      <Router>
+        <Navbar appName="AI-Mammoth" />
+        <main>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/analyze" element={<AnalyzePage />} />
+            <Route path="/results" element={<ResultsPage />} />
+            <Route path="/visualization" element={<VisualizationPage />} />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/documentation" element={<DocumentationPage />} />
+            <Route path="/README.md" element={<ReadmePage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </main>
+        <Footer />
+      </Router>
+    </ThemeProvider>
+  );
+}
+
+export default App;
